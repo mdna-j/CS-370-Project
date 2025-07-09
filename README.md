@@ -1,7 +1,7 @@
 # CS-370-Project
 
-Group Members-
+Group Members:
 Diego Mariscal
-Julian Medina 
+Jose Medina
 Kevin Mendoza
 Parker Miller
