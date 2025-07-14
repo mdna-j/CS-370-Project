@@ -1,4 +1,4 @@
-# CS-370-Project
+# CS-370-Project - PetaByte
 
 Group Members:  
 Diego Mariscal  
