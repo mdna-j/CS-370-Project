@@ -1,4 +1,4 @@
-Petabyte – A Virtual Pet Desktop App
+**Petabyte** – A Virtual Pet Desktop App
 
 **Petabyte** is a Tamagotchi-inspired virtual pet application built in Python using Kivy. Users care for a digital companion that responds to interactions like feeding, playing, and healing. The pet evolves over time, and its mood, health, and habits change based on how it's treated. Designed with modular software engineering principles and built by a collaborative student team.
 
