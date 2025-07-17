@@ -4,7 +4,7 @@ Petabyte – A Virtual Pet Desktop App
 
 ---
 
-##Features
+Features
 
 - Interactive pet system with hunger, mood, health, and energy tracking
 - Evolution system based on age and care level
@@ -18,7 +18,7 @@ Petabyte – A Virtual Pet Desktop App
 
 ---
 
-##Technologies
+Technologies
 
 | Tech/Tool    | Purpose                        |
 |--------------|--------------------------------|
