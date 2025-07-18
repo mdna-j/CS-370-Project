@@ -12,8 +12,8 @@ class PetaByteApp(App):
         LoginManager.initialize()
         sm = ScreenManager()
         sm.add_widget(LoginScreen(name='login'))
-        sm.add_widget(RegisterScreen(name='register'))  # 👈 Add register screen here
-        sm.add_widget(MainScreen(name='main'))          # Main app screen (your dashboard)
+        sm.add_widget(RegisterScreen(name='register'))
+        sm.add_widget(MainScreen(name='main'))
         return sm
 
 if __name__ == "__main__":
