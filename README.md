@@ -11,7 +11,7 @@ Features
 - Habit tracker to monitor daily actions and login streaks
 - Mood tracker with real-time emotional feedback
 - Idle system that applies penalties for user inactivity
-- Save/load system using local JSON persistence
+- Save/load system SQLite
 - Login system to support multiple user profiles
 - Optional desktop notifications for pet care reminders
 - GUI built with Kivy for cross-platform desktop support
