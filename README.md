@@ -24,6 +24,7 @@ Technologies
 |--------------|--------------------------------|
 | `Python`     | Core logic                     |
 | `Kivy`       | GUI framework for desktop UI   |
+| `SQLite`     | Lightweight database used to store user and pet data  |
 | `unittest`   | Unit testing                   |
 | `Trello`     | Project planning               |
 | `GitHub`     | Source control & collaboration |
