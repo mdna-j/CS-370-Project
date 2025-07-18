@@ -9,7 +9,6 @@ from kivy.lang import Builder
 kv_path = os.path.join(os.path.dirname(__file__), "login_screen.kv")
 Builder.load_file(kv_path)
 
-
 class LoginScreen(Screen):
     username_input = ObjectProperty(None)
     password_input = ObjectProperty(None)
@@ -20,12 +19,8 @@ class LoginScreen(Screen):
         else:
             self.show_popup("Login Failed", "Incorrect username or password.")
 
-    def register(self):
-        try:
-            LoginManager.register_user(self.username_input.text, self.password_input.text)
-            self.show_popup("Success", "Registration complete! Please log in.")
-        except Exception as e:
-            self.show_popup("Error", str(e))
+    def go_to_register(self):
+        self.manager.current = "register"
 
     def show_popup(self, title, message):
         Popup(title=title, content=Label(text=message), size_hint=(None, None), size=(300, 150)).open()
