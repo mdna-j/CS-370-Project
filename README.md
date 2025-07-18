@@ -29,8 +29,9 @@ Technologies
 | `Trello`     | Project planning               |
 | `GitHub`     | Source control & collaboration |
 
+---
 
-Group Members:  
+**Group Members**:  
 Diego Mariscal  
 Jose Medina  
 Kevin Mendoza  
