@@ -7,19 +7,17 @@ def initialize_habit_db():
 
     # Habit streaks table
     cursor.execute("""
-                   CREATE TABLE IF NOT EXISTS habit_streaks
-                   (
-                       user_id TEXT,
-                       habit_name TEXT,
-                       last_check_in TEXT,
-                       streak INTEGER,
-                       PRIMARY KEY (user_id, habit_name)
-                   )
+                       CREATE TABLE IF NOT EXISTS habit_history (
+        user_id TEXT,
+        habit_name TEXT,
+        date_completed TEXT
+    )
+
                    """)
 
     conn.commit()
     conn.close()
-    print("Habit streak table initialized successfully.")
+    print("Habit history initialized successfully.")
 
 
 if __name__ == "__main__":
