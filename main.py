@@ -1,8 +1,8 @@
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
-from petabyte.login_manager.login_screen import LoginScreen
-from petabyte.UI.register_screen import RegisterScreen
-from petabyte.login_manager.login_manager import LoginManager
+from login_manager.login_screen import LoginScreen
+from UI.register_screen import RegisterScreen
+from login_manager.login_manager import LoginManager
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
