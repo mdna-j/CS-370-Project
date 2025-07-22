@@ -42,18 +42,21 @@ class HabitStreakTracker:
 
     def save_to_db(self, db_path="identifier.sqlite"):
         conn = sqlite3.connect(db_path)
+        conn.execute("PRAGMA foreign_keys = ON")
         cursor = conn.cursor()
 
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS habit_streaks (
-                user_id TEXT,
-                habit_name TEXT,
-                last_check_in TEXT,
-                streak INTEGER,
-                points INTEGER,
-                PRIMARY KEY (user_id, habit_name)
-            )
-        ''')
+                       CREATE TABLE IF NOT EXISTS habit_streaks
+                       (
+                           user_id       INTEGER,
+                           habit_name    TEXT,
+                           last_check_in TEXT,
+                           streak        INTEGER,
+                           points        INTEGER,
+                           PRIMARY KEY (user_id, habit_name),
+                           FOREIGN KEY (user_id) REFERENCES users (id)
+                       )
+                       ''')
 
         cursor.execute('''
             INSERT OR REPLACE INTO habit_streaks 
@@ -67,13 +70,15 @@ class HabitStreakTracker:
     def log_completion_date(self, today=None, db_path="identifier.sqlite"):
         today = today or date.today()
         conn = sqlite3.connect(db_path)
+        conn.execute("PRAGMA foreign_keys = ON")
         cursor = conn.cursor()
 
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS habit_history (
-                user_id TEXT,
-                habit_name TEXT,
-                date_completed TEXT
+            user_id INTEGER,
+            habit_name TEXT,
+            date_completed TEXT,
+            FOREIGN KEY (user_id) REFERENCES users(id)
             )
         ''')
 

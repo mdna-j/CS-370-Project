@@ -6,7 +6,6 @@ import os
 from login_manager.login_manager import LoginManager
 
 
-
 kv_path = os.path.join(os.path.dirname(__file__), "register_screen.kv")
 Builder.load_file(kv_path)
 
