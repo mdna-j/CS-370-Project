@@ -54,7 +54,7 @@ class HabitStreakTracker:
                            streak        INTEGER,
                            points        INTEGER,
                            PRIMARY KEY (user_id, habit_name),
-                           FOREIGN KEY (user_id) REFERENCES users (id)
+                           FOREIGN KEY (user_id) REFERENCES users (user_id)
                        )
                        ''')
 
@@ -78,7 +78,7 @@ class HabitStreakTracker:
             user_id INTEGER,
             habit_name TEXT,
             date_completed TEXT,
-            FOREIGN KEY (user_id) REFERENCES users(id)
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
             )
         ''')
 
