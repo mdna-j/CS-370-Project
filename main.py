@@ -4,8 +4,8 @@ from login_manager.login_screen import LoginScreen
 from UI.register_screen import RegisterScreen
 from login_manager.login_manager import LoginManager
 import sys, os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 class MainScreen(Screen):
     pass
