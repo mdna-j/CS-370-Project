@@ -9,7 +9,9 @@ class LoginManager:
     def initialize():
         os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
         with sqlite3.connect(DB_PATH) as conn:
-            with open("petabyte/login_manager/schema.sql", "r") as f:
+            with open("petabyte/login_manager/Users.sql", "r") as ACC:
+                conn.executescript(ACC.read())
+            with open("petabyte/login_manager/Passwords.sql", "r") as f:
                 conn.executescript(f.read())
 
     @staticmethod
@@ -18,17 +20,30 @@ class LoginManager:
 
     @staticmethod
     def register_user(username, password):
-        hashed = LoginManager.hash_password(password)
+        password_hashed = LoginManager.hash_password(password)
         with sqlite3.connect(DB_PATH) as conn:
             try:
-                conn.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", (username, hashed))
+                cursor=conn.cursor()
+                cursor.execute("INSERT INTO Users (Username) VALUES (?)", (username,))
+                user_id=cursor.lastrowid
+                cursor.execute("INSERT INTO Passwords (User_ID,password_hash) VALUES (?,?)", (user_id,password_hashed))
                 conn.commit()
-            except sqlite3.IntegrityError:
+            except sqlite3.IntegrityError:##unessecary except modify to catch password errors? or is validation at earlier stage enough?
                 raise Exception("Username already exists.")
+
 
     @staticmethod
     def authenticate_user(username, password):
         hashed = LoginManager.hash_password(password)
         with sqlite3.connect(DB_PATH) as conn:
-            cur = conn.execute("SELECT * FROM users WHERE username = ? AND password_hash = ?", (username, hashed))
+            cur = conn.execute("SELECT * FROM Users,Passwords WHERE username = ? AND password_hash = ?", (username, hashed))
             return cur.fetchone() is not None
+
+    @staticmethod
+    def delete_account(username):
+        with sqlite3.connect(DB_PATH) as conn:
+            account_id = conn.execute("SELECT Account_ID FROM * WHERE username = ?",(username))
+            cur = conn.execute("DELETE * FROM Users WHERE ", (account_id,))
+            return Exception("account deleted")
+
+        ## verify account is deleted and cascades through database
