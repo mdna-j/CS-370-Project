@@ -2,7 +2,7 @@ from datetime import date, timedelta, datetime
 import sqlite3
 from plyer import notification  # For desktop notifications
 
-class HabitStreakTracker:
+class Habit_manager:
     def __init__(self, user_id, habit_name, last_check_in=None, streak=1, points=0):
         self.user_id = user_id
         self.habit_name = habit_name
@@ -43,25 +43,16 @@ class HabitStreakTracker:
     def save_to_db(self, db_path="identifier.sqlite"):
         conn = sqlite3.connect(db_path)
         conn.execute("PRAGMA foreign_keys = ON")
+        with open("petabyte/habit_tracker/Habits.sql", "r") as ACC:
+            conn.executescript(ACC.read())
+        conn.commit()
+        conn.close()
+    def update_db(self,db_path="identifier.sqlite"):
+        conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-
         cursor.execute('''
-                       CREATE TABLE IF NOT EXISTS habit_streaks
-                       (
-                           user_id       INTEGER,
-                           habit_name    TEXT,
-                           last_check_in TEXT,
-                           streak        INTEGER,
-                           points        INTEGER,
-                           PRIMARY KEY (user_id, habit_name),
-                           FOREIGN KEY (user_id) REFERENCES users (id)
-                       )
-                       ''')
-
-        cursor.execute('''
-            INSERT OR REPLACE INTO habit_streaks 
-            (user_id, habit_name, last_check_in, streak, points)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO Habits 
+            (user_id, habit_name, last_check_in, streak, points) VALUES (?, ?, ?, ?, ?)
         ''', (self.user_id, self.habit_name, self.last_check_in.isoformat(), self.streak, self.points))
 
         conn.commit()
@@ -72,18 +63,11 @@ class HabitStreakTracker:
         conn = sqlite3.connect(db_path)
         conn.execute("PRAGMA foreign_keys = ON")
         cursor = conn.cursor()
+        with open("petabyte/Habit_tracker/Habits_Log.sql", "r") as ACC:
+            conn.executescript(ACC.read())
 
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS habit_history (
-            user_id INTEGER,
-            habit_name TEXT,
-            date_completed TEXT,
-            FOREIGN KEY (user_id) REFERENCES users(id)
-            )
-        ''')
-
-        cursor.execute('''
-            INSERT INTO habit_history (user_id, habit_name, date_completed)
+            INSERT INTO Habits_Log (Habit_id, habit_name, timeptr)
             VALUES (?, ?, ?)
         ''', (self.user_id, self.habit_name, today.isoformat()))
 
@@ -96,8 +80,8 @@ class HabitStreakTracker:
         cursor = conn.cursor()
 
         cursor.execute('''
-            SELECT last_check_in, streak, points FROM habit_streaks
-            WHERE user_id = ? AND habit_name = ?
+            SELECT last_check_in, streak, points FROM Habits_Log
+            WHERE Habit_ID = ? AND habit_name = ?
         ''', (user_id, habit_name))
 
         result = cursor.fetchone()
@@ -115,7 +99,7 @@ class HabitStreakTracker:
     def delete_habit(user_id, habit_name, db_path="identifier.sqlite"):
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        cursor.execute('DELETE FROM habit_streaks WHERE user_id = ? AND habit_name = ?', (user_id, habit_name))
+        cursor.execute('DELETE FROM Habits_Log WHERE Habits_Log.Habit_ID= ? AND habit_name = ?', (user_id, habit_name))
         cursor.execute('DELETE FROM habit_history WHERE user_id = ? AND habit_name = ?', (user_id, habit_name))
         conn.commit()
         conn.close()
@@ -124,7 +108,7 @@ class HabitStreakTracker:
         if self.streak >= 5:
             pet.update_happiness(10)  # You define this method in your Pet class
         elif self.get_missed_days() >= 2:
-            pet.update_happiness(-5)
+            pet.update_happiness(-5)# should be handled by petsystem
 
     def notify_user_missed(self, missed_days):
         notification.notify(
