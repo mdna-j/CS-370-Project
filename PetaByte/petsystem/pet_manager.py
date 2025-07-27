@@ -1,10 +1,10 @@
 import sqlite3
-import hashlib
 import os
 
 DB_PATH = os.path.join("petabyte", "database", "petabyte.db")
 
 class PetManager:
+
     @staticmethod
     def initialize():
         os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -15,7 +15,7 @@ class PetManager:
                 conn.executescript(f.read())
 
     @staticmethod
-    def Add_Image(image):
+    def set_image(image):
         with sqlite3.connect(DB_PATH) as conn:
             try:
                 conn.execute("INSERT INTO PetMedia (pet_image_1) VALUES (?)", (image,))
@@ -24,7 +24,7 @@ class PetManager:
                 raise Exception("error inserting image into Database")
 
     @staticmethod
-    def Add_Audio(audio):
+    def set_audio(audio):
         with sqlite3.connect(DB_PATH) as conn:
             try:
                 conn.execute("INSERT INTO PetMedia(pet_sound_1) VALUES (?)", (audio,))
@@ -33,14 +33,44 @@ class PetManager:
                 raise Exception("error inserting audio into Database")
 
     @staticmethod
-    def Fetch_Audio(pet_media_ptr):
+    def get_audio(pet_media_ptr):
         with sqlite3.connect(DB_PATH) as conn:
             cur = conn.execute("SELECT pet_sound_1 FROM PetMedia WHERE pet_media_ptr = ?  ", (pet_media_ptr,))
             return cur.fetchone() is not None
 
     @staticmethod
-    def Fetch_Image(pet_media_ptr):
+    def get_image(pet_media_ptr):
         with sqlite3.connect(DB_PATH) as conn:
             cur = conn.execute("SELECT pet_image_1 FROM PetMedia WHERE pet_media_ptr = ?  ", (pet_media_ptr,))
             return cur.fetchone() is not None
 
+    @staticmethod
+    def set_pet_mood(moodvalue):
+        with sqlite3.connect(DB_PATH) as conn:
+            try:
+                conn.execute("INSERT INTO PetState(pet_mood) VALUES (?)", (moodvalue,))
+                conn.commit()
+            except sqlite3.IntegrityError:
+                raise Exception("error inserting audio into Database")
+
+
+    @staticmethod
+    def get_pet_mood(mood):
+        with sqlite3.connect(DB_PATH) as conn:
+            cur = conn.execute("SELECT pet_image_1 FROM PetMedia WHERE pet_media_ptr = ?  ", (mood,))
+            return cur.fetchone() is not None
+
+    @staticmethod
+    def set_pet_need(needvalue):
+        with sqlite3.connect(DB_PATH) as conn:
+            try:
+                conn.execute("INSERT INTO PetState(pet_need_1) VALUES (?)", (needvalue,))
+                conn.commit()
+            except sqlite3.IntegrityError:
+                raise Exception("error inserting audio into Database")
+
+    @staticmethod
+    def get_pet_need(need):
+        with sqlite3.connect(DB_PATH) as conn:
+            cur = conn.execute("SELECT pet_need_1 FROM PetState WHERE pet_need_1 = ?  ", (need,))
+            return cur.fetchone() is not None
