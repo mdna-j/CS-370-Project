@@ -13,11 +13,11 @@ class MainScreen(Screen):
 class PetaByteApp(App):
     def build(self):
         LoginManager.initialize()
-        sm = ScreenManager()
-        sm.add_widget(LoginScreen(name='login'))
-        sm.add_widget(RegisterScreen(name='register'))
-        sm.add_widget(MainScreen(name='main'))
-        return sm
+        SM = ScreenManager()
+        SM.add_widget(LoginScreen(name='login'))
+        SM.add_widget(RegisterScreen(name='register'))
+        SM.add_widget(MainScreen(name='main'))
+        return SM
 
 if __name__ == "__main__":
     PetaByteApp().run()

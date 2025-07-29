@@ -2,7 +2,10 @@ from datetime import date, timedelta, datetime
 import sqlite3
 from plyer import notification  # For desktop notifications
 
-class Habit_manager:
+class Habit_Manager:
+
+    db_path = "PetaByte/database/petabyte.db"
+
     def __init__(self, user_id, habit_name, last_check_in=None, streak=1, points=0):
         self.user_id = user_id
         self.habit_name = habit_name
@@ -40,15 +43,16 @@ class Habit_manager:
         return (f"<HabitStreakTracker(user_id={self.user_id}, habit={self.habit_name}, "
                 f"streak={self.streak}, points={self.points}, last_check_in={self.last_check_in})>")
 
-    def save_to_db(self, db_path="identifier.sqlite"):
-        conn = sqlite3.connect(db_path)
+    def save_to_db(self):
+        conn = sqlite3.connect(Habit_Manager.db_path)
         conn.execute("PRAGMA foreign_keys = ON")
         with open("petabyte/habit_tracker/Habits.sql", "r") as ACC:
             conn.executescript(ACC.read())
         conn.commit()
         conn.close()
-    def update_db(self,db_path="identifier.sqlite"):
-        conn = sqlite3.connect(db_path)
+
+    def update_db(self):
+        conn = sqlite3.connect(Habit_Manager.db_path)
         cursor = conn.cursor()
         cursor.execute('''
             INSERT OR REPLACE INTO Habits 
@@ -58,9 +62,9 @@ class Habit_manager:
         conn.commit()
         conn.close()
 
-    def log_completion_date(self, today=None, db_path="identifier.sqlite"):
+    def log_completion_date(self, today=None):
         today = today or date.today()
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3.connect(Habit_Manager.db_path)
         conn.execute("PRAGMA foreign_keys = ON")
         cursor = conn.cursor()
         with open("petabyte/Habit_tracker/Habits_Log.sql", "r") as ACC:
@@ -75,8 +79,8 @@ class Habit_manager:
         conn.close()
 
     @classmethod
-    def load_from_db(cls, user_id, habit_name, db_path="identifier.sqlite"):
-        conn = sqlite3.connect(db_path)
+    def load_from_db(cls, user_id, habit_name):
+        conn = sqlite3.connect(Habit_Manager.db_path)
         cursor = conn.cursor()
 
         cursor.execute('''
@@ -96,8 +100,8 @@ class Habit_manager:
             return cls(user_id, habit_name)
 
     @staticmethod
-    def delete_habit(user_id, habit_name, db_path="identifier.sqlite"):
-        conn = sqlite3.connect(db_path)
+    def delete_habit(user_id, habit_name):
+        conn = sqlite3.connect(Habit_Manager.db_path)
         cursor = conn.cursor()
         cursor.execute('DELETE FROM Habits_Log WHERE Habits_Log.Habit_ID= ? AND habit_name = ?', (user_id, habit_name))
         cursor.execute('DELETE FROM habit_history WHERE user_id = ? AND habit_name = ?', (user_id, habit_name))
