@@ -57,6 +57,8 @@ class make_pet:
     def save_as_gif(self,name:str):
         frames = [image.pil_image() for image in self.animatedpet.images]
         self.animatedpet=frames[0].save(name, save_all=True, append_images=frames[1:], duration=250, loop=0)
+        if self.petidle is None:
+            self.petidle = self.animatedpet
         self.petanims.append(frames)
 
 
@@ -89,13 +91,13 @@ skeleton_keypoints = [
 ]
 """
 #run
-newpet= make_pet()
+newpet = make_pet()
 
-pet=newpet.gen_baseimg("cute blue dragon")
+pet = newpet.gen_baseimg(" 8 bit barbie as a cheer leader holding pompoms ")
 
-keyposes=newpet.gen_idle_postions([0,20,-20])
+keyposes = newpet.gen_idle_postions([0,20,-20])
 
-frames=newpet.Gen_animation(keyposes)
+frames = newpet.Gen_animation(keyposes)
 
 newpet.save_as_gif("pet.gif")
 
