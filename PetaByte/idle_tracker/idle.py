@@ -96,33 +96,6 @@ def map_mood_from_app(app_name):
     else:
         return "neutral"
 
-def track_user_activity(duration_sec=60, interval_sec=5):
-    """
-    Runs for `duration_sec`, polling every `interval_sec`.
-    Returns a list of (timestamp, app_name, mood) tuples.
-    """
-    print(f"🔍 Tracking user activity for {duration_sec} seconds...\n")
-    end_time = time.time() + duration_sec
-    mood_log = []
-
-    while time.time() < end_time:
-        app = get_active_app_name()
-        mood = map_mood_from_app(app)
-        ts = datetime.datetime.now().strftime("%H:%M:%S")
-
-        if app:
-            print(f"[{ts}] App: {app}, Mood: {mood}")
-            mood_log.append((ts, app, mood))
-        else:
-            print(f"[{ts}] App: Unknown, Mood: neutral")
-            mood_log.append((ts, None, "neutral"))
-
-        time.sleep(interval_sec)
-
-    return mood_log
-
-
-
 def insert_idle_log(user_id, timestamp, app_name, mood):
     conn = sqlite3.connect("PetaByte/database/petabyte.db")
     cursor = conn.cursor()
@@ -142,6 +115,35 @@ def insert_idle_log(user_id, timestamp, app_name, mood):
     ''', (user_id, timestamp, app_name, mood))
     conn.commit()
     conn.close()
+
+
+def track_user_activity(duration_sec=60, interval_sec=5):
+    """
+    Runs for `duration_sec`, polling every `interval_sec`.
+    Returns a list of (timestamp, app_name, mood) tuples.
+    """
+    print(f"🔍 Tracking user activity for {duration_sec} seconds...\n")
+    end_time = time.time() + duration_sec
+    mood_log = []
+
+    while time.time() < end_time:
+        app = get_active_app_name()
+        mood = map_mood_from_app(app)
+        ts = datetime.datetime.now().strftime("%H:%M:%S")
+
+        if app != last_app:
+            print(f"[{ts}] App: {app}, Mood: {mood}")
+            mood_log.append((ts, app, mood))
+            if id and app:  # Save only if user is known and app is valid
+                insert_idle_log(id, ts, app, mood)
+            last_app = app
+        else:
+            print(f"[{ts}] App unchanged")
+
+        time.sleep(interval_sec)
+
+    return mood_log
+
 
 
 
