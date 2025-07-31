@@ -6,13 +6,11 @@ import os
 from login_manager.login_manager import LoginManager
 
 
-kv_path = os.path.join(os.path.dirname(__file__), "register_screen.kv")
+kv_path = os.path.join(os.path.dirname(__file__), "pet_screen.kv")
 Builder.load_file(kv_path)
 
-class RegisterScreen(Screen):
-
+class petscreen(Screen):
     open_popups = []
-
     def do_register(self, username, password):
         if not username or not password:
             self.show_popup("Error", "Username and password cannot be empty.")
@@ -28,7 +26,9 @@ class RegisterScreen(Screen):
         self.manager.current = "login"
 
     def show_popup(self, title, message):
-        popup = Popup(title=title,content=Label(text=message),size_hint=(0.7, 0.4))
+        popup = Popup(title=title,
+                      content=Label(text=message),
+                      size_hint=(0.7, 0.4))
         popup.open()
         self.open_popups.append(popup)
 
