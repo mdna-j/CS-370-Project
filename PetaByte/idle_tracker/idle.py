@@ -144,6 +144,7 @@ def insert_idle_log(user_id, timestamp, app_name, mood):
     conn.close()
 
 
+
 if __name__ == "__main__":
     # Example: track for 30 seconds, polling every 5s
     log = track_user_activity(duration_sec=30, interval_sec=5)
