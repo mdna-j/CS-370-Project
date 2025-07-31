@@ -40,6 +40,14 @@ class LoginManager:
             return cur.fetchone() is not None
 
     @staticmethod
+    def get_user_id(username):
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT Account_ID FROM Users WHERE Username = ?", (username,))
+            result = cursor.fetchone()
+            return result[0] if result else None
+
+    @staticmethod
     def delete_account(username):
         with sqlite3.connect(DB_PATH) as conn:
             account_id = conn.execute("SELECT Account_ID FROM * WHERE username = ?",(username))
