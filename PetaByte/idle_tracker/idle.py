@@ -1,6 +1,7 @@
 import platform
 import time
 import datetime
+import sqlite3
 
 # Define mood map
 # Windows app-to-mood mapping
@@ -119,6 +120,29 @@ def track_user_activity(duration_sec=60, interval_sec=5):
         time.sleep(interval_sec)
 
     return mood_log
+
+
+
+def insert_idle_log(user_id, timestamp, app_name, mood):
+    conn = sqlite3.connect("PetaByte/database/petabyte.db")
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Idle_Activity_Log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            timestamp TEXT,
+            app_name TEXT,
+            mood TEXT,
+            FOREIGN KEY(user_id) REFERENCES Users(Account_ID)
+        )
+    ''')
+    cursor.execute('''
+        INSERT INTO Idle_Activity_Log (user_id, timestamp, app_name, mood)
+        VALUES (?, ?, ?, ?)
+    ''', (user_id, timestamp, app_name, mood))
+    conn.commit()
+    conn.close()
+
 
 if __name__ == "__main__":
     # Example: track for 30 seconds, polling every 5s
