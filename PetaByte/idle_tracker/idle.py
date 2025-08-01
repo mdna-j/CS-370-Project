@@ -117,14 +117,11 @@ def insert_idle_log(user_id, timestamp, app_name, mood):
     conn.close()
 
 
-def track_user_activity(duration_sec=60, interval_sec=5):
-    """
-    Runs for `duration_sec`, polling every `interval_sec`.
-    Returns a list of (timestamp, app_name, mood) tuples.
-    """
+def track_user_activity(user_id, duration_sec=60, interval_sec=5):
     print(f"🔍 Tracking user activity for {duration_sec} seconds...\n")
     end_time = time.time() + duration_sec
     mood_log = []
+    last_app = None  # Track last app to avoid duplicate logging
 
     while time.time() < end_time:
         app = get_active_app_name()
@@ -134,8 +131,8 @@ def track_user_activity(duration_sec=60, interval_sec=5):
         if app != last_app:
             print(f"[{ts}] App: {app}, Mood: {mood}")
             mood_log.append((ts, app, mood))
-            if id and app:  # Save only if user is known and app is valid
-                insert_idle_log(id, ts, app, mood)
+            if user_id and app:
+                insert_idle_log(user_id, ts, app, mood)
             last_app = app
         else:
             print(f"[{ts}] App unchanged")
@@ -144,12 +141,12 @@ def track_user_activity(duration_sec=60, interval_sec=5):
 
     return mood_log
 
-
-
-
+# Example usage for testing
+'''
 if __name__ == "__main__":
     # Example: track for 30 seconds, polling every 5s
     log = track_user_activity(duration_sec=30, interval_sec=5)
     print("\nCollected activity log:")
     for entry in log:
         print(entry)
+'''

@@ -17,15 +17,21 @@ class LoginScreen(Screen):
     password_input = ObjectProperty(None)
 
     def login(self):
-        if LoginManager.authenticate_user(self.username_input.text, self.password_input.text):
+        username = self.username_input.text
+        password = self.password_input.text
+
+        if LoginManager.authenticate_user(username, password):
             self.manager.current = "main"
-            # ✅ Start background thread after login
-            idle_thread = threading.Thread(target=track_user_activity, args=(id,))
+
+            user_id = LoginManager.get_user_id(username)  # ✅ Get the correct user ID
+
+            # ✅ Start background tracking with correct user ID
+            idle_thread = threading.Thread(target=track_user_activity, args=(user_id,))
             idle_thread.daemon = True
             idle_thread.start()
+
         else:
             self.show_popup("Login Failed", "Incorrect username or password.")
-
     def go_to_register(self):
         self.manager.current = "register"
 
