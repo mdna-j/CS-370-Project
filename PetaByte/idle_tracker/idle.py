@@ -3,6 +3,8 @@ import time
 import datetime
 import sqlite3
 
+from mood_tracker.mood import log_mood
+
 # Define mood map
 # Windows app-to-mood mapping
 windows_app_mood_map = {
@@ -133,6 +135,7 @@ def track_user_activity(user_id, duration_sec=60, interval_sec=5):
             mood_log.append((ts, app, mood))
             if user_id and app:
                 insert_idle_log(user_id, ts, app, mood)
+                log_mood(user_id, mood, source="idle") # Log mood as 'idle' source
             last_app = app
         else:
             print(f"[{ts}] App unchanged")
