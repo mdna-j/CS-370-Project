@@ -7,7 +7,6 @@ import sys, os
 from petsystem.pet_screen import petscreen
 
 
-
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 class MainScreen(Screen):
