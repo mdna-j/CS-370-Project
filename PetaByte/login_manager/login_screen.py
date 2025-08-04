@@ -1,3 +1,4 @@
+from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen
 from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
@@ -6,34 +7,71 @@ from login_manager.login_manager import LoginManager
 import os
 from kivy.lang import Builder
 import threading
-from idle_tracker import track_user_activity  # Import your background function
+from idle_tracker.idle import track_user_activity  # Import idle tracker function
 
-
+# Load the corresponding KV file
 kv_path = os.path.join(os.path.dirname(__file__), "login_screen.kv")
 Builder.load_file(kv_path)
 
 class LoginScreen(Screen):
     username_input = ObjectProperty(None)
     password_input = ObjectProperty(None)
+    open_popups = []
 
     def login(self):
         username = self.username_input.text
         password = self.password_input.text
 
+        # Input validation if implemented
+        if hasattr(LoginManager, 'validate') and not LoginManager.validate(self.username_input, self.password_input):
+            self.show_button_popup()
+            return
+
+        # Authenticate user
         if LoginManager.authenticate_user(username, password):
+            # Switch to mainscreen
             self.manager.current = "main"
 
-            user_id = LoginManager.get_user_id(username)  # ✅ Get the correct user ID
-
-            # ✅ Start background tracking with correct user ID
-            idle_thread = threading.Thread(target=track_user_activity, args=(user_id,))
-            idle_thread.daemon = True
-            idle_thread.start()
-
+            # Start idle tracking in background
+            user_id = LoginManager.get_user_id(username)
+            if user_id is not None:
+                idle_thread = threading.Thread(target=track_user_activity, args=(user_id,))
+                idle_thread.daemon = True
+                idle_thread.start()
         else:
             self.show_popup("Login Failed", "Incorrect username or password.")
-    def go_to_register(self):
+
+    def go_to_register(self, *args):
         self.manager.current = "register"
 
     def show_popup(self, title, message):
-        Popup(title=title, content=Label(text=message), size_hint=(None, None), size=(300, 150)).open()
+        popup = Popup(
+            title=title,
+            content=Label(text=message),
+            auto_dismiss=True,
+            size_hint=(None, None),
+            size=(300, 150)
+        )
+        popup.open()
+        self.open_popups.append(popup)
+
+    def show_button_popup(self):
+        button = Button(text="Attempt to Register")
+        popup = Popup(
+            title="Failed to Login",
+            content=button,
+            auto_dismiss=True,
+            size_hint=(None, None),
+            size=(300, 150)
+        )
+        button.bind(on_press=self.go_to_register)
+        popup.open()
+        self.open_popups.append(popup)
+
+    def dismiss_all_popups(self):
+        for popup in self.open_popups:
+            popup.dismiss()
+        self.open_popups.clear()
+
+    def on_leave(self):
+        self.dismiss_all_popups()
