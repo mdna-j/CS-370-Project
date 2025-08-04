@@ -17,7 +17,7 @@ class PetaByteApp(App):
         SM = ScreenManager()
         SM.add_widget(LoginScreen(name='login'))
         SM.add_widget(RegisterScreen(name='register'))
-        SM.add_widget(petscreen(name='pet screen'))
+        SM.add_widget(petscreen(name='petscreen'))
         SM.add_widget(MainScreen(name='main'))
         return SM
 
