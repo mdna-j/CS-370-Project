@@ -72,5 +72,5 @@ class PetManager:
     @staticmethod
     def get_pet_need(need):
         with sqlite3.connect(DB_PATH) as conn:
-            cur = conn.execute("SELECT pet_need_1 FROM PetState WHERE pet_need_1 = ?  ", (need,))
+            cur = conn.execute("SELECT pet_need_1 FROM PetState WHERE pet_need_1 = ? ", (need,))
             return cur.fetchone() is not None

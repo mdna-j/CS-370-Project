@@ -10,6 +10,9 @@ kv_path = os.path.join(os.path.dirname(__file__), "register_screen.kv")
 Builder.load_file(kv_path)
 
 class RegisterScreen(Screen):
+
+    open_popups = []
+
     def do_register(self, username, password):
         if not username or not password:
             self.show_popup("Error", "Username and password cannot be empty.")
@@ -25,7 +28,14 @@ class RegisterScreen(Screen):
         self.manager.current = "login"
 
     def show_popup(self, title, message):
-        popup = Popup(title=title,
-                      content=Label(text=message),
-                      size_hint=(0.7, 0.4))
+        popup = Popup(title=title,content=Label(text=message),size_hint=(0.7, 0.4))
         popup.open()
+        self.open_popups.append(popup)
+
+    def dismiss_all_popups(self):
+        for popup in self.open_popups:
+            popup.dismiss()
+        self.open_popups.clear()
+
+    def on_leave(self):
+        self.dismiss_all_popups()

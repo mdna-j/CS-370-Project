@@ -1,10 +1,13 @@
 import sqlite3
 import hashlib
 import os
+import re
 
-DB_PATH = os.path.join("petabyte", "database", "petabyte.db")
+DB_PATH = os.path.join("PetaByte", "database", "petabyte.db")
+
 
 class LoginManager:
+
     @staticmethod
     def initialize():
         os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -16,27 +19,30 @@ class LoginManager:
 
     @staticmethod
     def hash_password(password):
+
         return hashlib.sha256(password.encode()).hexdigest()
 
     @staticmethod
     def register_user(username, password):
         password_hashed = LoginManager.hash_password(password)
-        with sqlite3.connect(DB_PATH) as conn:
-            try:
-                cursor=conn.cursor()
-                cursor.execute("INSERT INTO Users (Username) VALUES (?)", (username,))
-                user_id=cursor.lastrowid
-                cursor.execute("INSERT INTO Passwords (User_ID,password_hash) VALUES (?,?)", (user_id,password_hashed))
-                conn.commit()
-            except sqlite3.IntegrityError:##unessecary except modify to catch password errors? or is validation at earlier stage enough?
-                raise Exception("Username already exists.")
 
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.execute("PRAGMA foreign_keys = ON")
+            try:
+                cursor = conn.cursor()
+                cursor.execute("INSERT INTO Users (username) VALUES (?)", (username,))
+                user_id = cursor.lastrowid
+                cursor.execute("INSERT INTO Passwords (user_id,password_hash) VALUES (?,?)", (user_id, password_hashed))
+                conn.commit()
+            except sqlite3.IntegrityError:  ##unessecary except modify to catch password errors? or is validation at earlier stage enough?
+                raise Exception("Failed to register user.")
 
     @staticmethod
     def authenticate_user(username, password):
         hashed = LoginManager.hash_password(password)
         with sqlite3.connect(DB_PATH) as conn:
-            cur = conn.execute("SELECT * FROM Users,Passwords WHERE username = ? AND password_hash = ?", (username, hashed))
+            cur = conn.execute("SELECT * FROM Users,Passwords WHERE Users.username = ? AND Passwords.password_hash = ?",
+                               (username, hashed))
             return cur.fetchone() is not None
 
     @staticmethod
@@ -50,8 +56,19 @@ class LoginManager:
     @staticmethod
     def delete_account(username):
         with sqlite3.connect(DB_PATH) as conn:
-            account_id = conn.execute("SELECT Account_ID FROM * WHERE username = ?",(username))
+            account_id = conn.execute("SELECT Account_ID FROM * WHERE username = ?", (username))
             cur = conn.execute("DELETE * FROM Users WHERE ", (account_id,))
             return Exception("account deleted")
 
-        ## verify account is deleted and cascades through database
+    @staticmethod
+    def validate(username, password):
+        from login_manager.login_screen import LoginScreen
+        if username.text.strip() != "":
+            if re.search(r"^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%&*-]).{8,20}$", password.text.strip()):
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    ## verify account is deleted and cascades through database

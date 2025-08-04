@@ -5,7 +5,10 @@ from UI.register_screen import RegisterScreen
 from login_manager.login_manager import LoginManager
 import sys, os
 from petsystem.pet_screen import petscreen
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3b90b4afa0ca99eaab60b42fb4501e53fa75ff5e
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
