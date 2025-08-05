@@ -15,10 +15,16 @@
                 size_hint_y: 1
                 size_hint_x: 1.5
                 pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-            Image:
-                source: 'PetaByte/petsystem/default_pet.gif'
-                size: .3,.3
+            BoxLayout:
+                size_hint_y: .8
+                size_hint_x: .8
                 pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+                Image:
+                    source: 'PetaByte/petsystem/default_pet.gif'
+                    fit_mode: 'contain'
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
             Label:
                 text: "Happiness Level"
                 size_hint_y: 0.15
@@ -29,8 +35,8 @@
                 value: root.happiness
                 height: 20
                 size_hint_y: 0.1
+                size_hint_x:1
                 pos_hint: {'center_x': 0.5, 'center_y': 0.1}
-
             Label:
                 text: "Hunger Level"
                 size_hint_y: 0.15
@@ -41,6 +47,7 @@
                 value: root.hunger
                 height: 20
                 size_hint_y: 0.10
+                size_hint_x:1
                 pos_hint: {'center_x': 0.5, 'center_y': 0}
 
 
