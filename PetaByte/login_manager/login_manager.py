@@ -57,7 +57,7 @@ class LoginManager:
     def delete_account(username):
         with sqlite3.connect(DB_PATH) as conn:
             account_id = conn.execute("SELECT Account_ID FROM * WHERE username = ?", (username))
-            cur = conn.execute("DELETE * FROM Users WHERE ", (account_id,))
+            conn.execute("DELETE * FROM Users WHERE ", (account_id,))
             return Exception("account deleted")
 
     @staticmethod
@@ -70,5 +70,3 @@ class LoginManager:
                 return False
         else:
             return False
-
-    ## verify account is deleted and cascades through database

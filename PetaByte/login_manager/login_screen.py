@@ -29,8 +29,7 @@ class LoginScreen(Screen):
 
         # Authenticate user
         if LoginManager.authenticate_user(username, password):
-            self.manager.current = "main"
-
+            self.go_to_generate()
             # Start idle tracking in background
             user_id = LoginManager.get_user_id(username)
             if user_id is not None:
@@ -42,6 +41,9 @@ class LoginScreen(Screen):
 
     def go_to_register(self, *args):
         self.manager.current = "register"
+
+    def go_to_generate(self, *args):
+        self.manager.current = "petscreen"
 
     def show_popup(self, title, message):
         popup = Popup(
