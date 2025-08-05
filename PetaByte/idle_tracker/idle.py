@@ -1,6 +1,9 @@
 import platform
 import time
 import datetime
+import sqlite3
+
+from mood_tracker.mood import log_mood
 
 # Define mood map
 # Windows app-to-mood mapping
@@ -95,34 +98,58 @@ def map_mood_from_app(app_name):
     else:
         return "neutral"
 
-def track_user_activity(duration_sec=60, interval_sec=5):
-    """
-    Runs for `duration_sec`, polling every `interval_sec`.
-    Returns a list of (timestamp, app_name, mood) tuples.
-    """
+def insert_idle_log(user_id, timestamp, app_name, mood):
+    conn = sqlite3.connect("PetaByte/database/petabyte.db")
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Idle_Activity_Log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            timestamp TEXT,
+            app_name TEXT,
+            mood TEXT,
+            FOREIGN KEY(user_id) REFERENCES Users(Account_ID)
+        )
+    ''')
+    cursor.execute('''
+        INSERT INTO Idle_Activity_Log (user_id, timestamp, app_name, mood)
+        VALUES (?, ?, ?, ?)
+    ''', (user_id, timestamp, app_name, mood))
+    conn.commit()
+    conn.close()
+
+
+def track_user_activity(user_id, duration_sec=60, interval_sec=5):
     print(f"🔍 Tracking user activity for {duration_sec} seconds...\n")
     end_time = time.time() + duration_sec
     mood_log = []
+    last_app = None  # Track last app to avoid duplicate logging
 
     while time.time() < end_time:
         app = get_active_app_name()
         mood = map_mood_from_app(app)
         ts = datetime.datetime.now().strftime("%H:%M:%S")
 
-        if app:
+        if app != last_app:
             print(f"[{ts}] App: {app}, Mood: {mood}")
             mood_log.append((ts, app, mood))
+            if user_id and app:
+                insert_idle_log(user_id, ts, app, mood)
+                log_mood(user_id, mood, source="idle") # Log mood as 'idle' source
+            last_app = app
         else:
-            print(f"[{ts}] App: Unknown, Mood: neutral")
-            mood_log.append((ts, None, "neutral"))
+            print(f"[{ts}] App unchanged")
 
         time.sleep(interval_sec)
 
     return mood_log
 
+# Example usage for testing
+'''
 if __name__ == "__main__":
     # Example: track for 30 seconds, polling every 5s
     log = track_user_activity(duration_sec=30, interval_sec=5)
     print("\nCollected activity log:")
     for entry in log:
         print(entry)
+'''

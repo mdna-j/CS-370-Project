@@ -1,4 +1,4 @@
- CREATE TABLE IF NOT EXISTS Habits_Log(
+CREATE TABLE IF NOT EXISTS Habits_Log(
 Habit_ID       INTEGER,
 habit_name    TEXT,
 last_check_in TEXT,
