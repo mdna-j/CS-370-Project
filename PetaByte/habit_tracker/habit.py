@@ -104,15 +104,14 @@ class Habit_Manager:
         conn = sqlite3.connect(Habit_Manager.db_path)
         cursor = conn.cursor()
         cursor.execute('DELETE FROM Habits_Log WHERE Habits_Log.Habit_ID= ? AND habit_name = ?', (user_id, habit_name))
-        cursor.execute('DELETE FROM habit_history WHERE user_id = ? AND habit_name = ?', (user_id, habit_name))
         conn.commit()
         conn.close()
 
     def apply_to_pet(self, pet):
         if self.streak >= 5:
-            pet.update_happiness(10)  # You define this method in your Pet class
+            pet.update_happiness(10)  # define this method in Pet class
         elif self.get_missed_days() >= 2:
-            pet.update_happiness(-5)# should be handled by petsystem
+            pet.update_happiness(-5)# should be handled by pet system
 
     def notify_user_missed(self, missed_days):
         notification.notify(

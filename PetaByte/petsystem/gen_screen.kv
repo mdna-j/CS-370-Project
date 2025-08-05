@@ -1,0 +1,45 @@
+<PetScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: 0.3
+            spacing: 10
+
+            Label:
+                text: "Happiness Level"
+                size_hint_y: 0.2
+            ProgressBar:
+                max: 100
+                value: root.happiness
+                height: 20
+                size_hint_y: 0.2
+
+            Label:
+                text: "Hunger Level"
+                size_hint_y: 0.2
+            ProgressBar:
+                max: 100
+                value: root.hunger
+                height: 20
+                size_hint_y: 0.2
+
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 20
+            size_hint_y: 0.2
+
+            Button:
+            text: "Feed Pet"
+                on_press: root.feed_pet()
+
+            Button:
+                text: "Clean Pet"
+                on_press: root.clean_pet()
+
+            Button:
+                text: "Pet Pet"
+                on_press: root.pet_pet()
