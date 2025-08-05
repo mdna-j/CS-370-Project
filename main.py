@@ -5,8 +5,8 @@ from UI.register_screen import RegisterScreen
 from login_manager.login_manager import LoginManager
 import sys, os
 
-from petsystem.gen_screen import PetScreen
-from petsystem.pet_screen import petscreen
+from petsystem.PetGen import GenScreen
+from petsystem.pet_screen import PetScreen
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,6 +20,7 @@ class PetaByteApp(App):
         SM.add_widget(LoginScreen(name='login'))
         SM.add_widget(RegisterScreen(name='register'))
         SM.add_widget(PetScreen(name='petscreen'))
+        SM.add_widget(GenScreen(name='Genscreen'))
         SM.add_widget(MainScreen(name='main'))
         return SM
 

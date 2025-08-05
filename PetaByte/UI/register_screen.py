@@ -20,7 +20,7 @@ class RegisterScreen(Screen):
         try:
             LoginManager.register_user(username, password)
             self.show_popup("Success", "User registered successfully!")
-            self.manager.current = "login"
+            self.manager.current = "Genscreen"
         except Exception as e:
             self.show_popup("Registration Error", str(e))
 
