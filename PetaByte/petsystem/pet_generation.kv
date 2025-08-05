@@ -1,0 +1,34 @@
+<GenScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.95, 0.97, 1, 1  # Same light background
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: 40
+        spacing: 25
+
+        Label:
+            text: "Create Your Pet"
+            font_size: 28
+            color: 0.2, 0.2, 0.3, 1
+
+        TextInput:
+            id: prompt
+            hint_text: "describe your pet"
+            font_size: 18
+            size_hint_y: None
+            height: 50
+
+        BoxLayout:
+            spacing: 20
+            size_hint_y: None
+            height: 50
+
+            Button:
+                text: "Create"
+                on_release: root.do_Petgen(prompt.text)
+                background_color: 0.2, 0.8, 0.4, 1

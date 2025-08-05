@@ -1,9 +1,20 @@
+import threading
 from math import floor
-
 import pixellab
 from PIL import Image
 from pixellab.animate_with_skeleton import AnimateWithSkeletonResponse
+from kivy.uix.button import Button
+from kivy.lang import Builder
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
+from kivy.uix.screenmanager import Screen, ScreenManager
+import os
+from kivy.clock import Clock
+from petsystem import pet_screen
+from petsystem.pet_screen import PetScreen
 
+kv_path=os.path.join(os.path.dirname(__file__),'pet_generation.kv')
+Builder.load_file(kv_path)
 
 class make_pet:
 
@@ -14,13 +25,24 @@ class make_pet:
         self.petidle = None
         self.petanims = []
 
+    def make_pet(self, prompt):
+
+        pet = self.gen_baseimg(prompt)
+        print("generating pet image")
+        keyposes = self.gen_idle_postions([10, 30, -30])
+        print("generating Idle")
+        frames = self.Gen_animation(keyposes)
+        print("generating animation")
+        self.save_as_gif("PetaByte/petsystem/pet.gif")
+        print("saved as pet.gif")
+
 
     def gen_baseimg(self,prompt: str) -> Image.Image:
         self.petpic = self.client.generate_image_bitforge(
             description=prompt,
             image_size={"width": 128, "height": 128},
             detail="low detail").image.pil_image()
-        self.petpic.save("pet.png")
+        self.petpic.save("PetaByte/petsystem/pet.png")
         return self.petpic
 
       # improve return works for now tho just ugly
@@ -61,42 +83,60 @@ class make_pet:
             self.petidle = self.animatedpet
         self.petanims.append(frames)
 
+class GenScreen(Screen):
+    open_popups = []
+    def go_to_register(self, *args):
+        self.manager.current = "register"
 
-"""
-pil_image = make_pet.gen_img("cute red dragon ")
-pil_image.save("default_pet.png")
+    def go_to_login(self):
+        self.manager.current = "login"
 
-skeleton_response = client.estimate_skeleton(make_pet.gen_baseimg("cute red dragon "))
-raw_keypoints = skeleton_response.keypoints
+    def go_to_pet(self, *args):
+            self.manager.current = "petscreen"
+
+    def do_Petgen(self, prompt:str):
+        pet=make_pet()
+        self.show_button_popup("creating pet a default pet awaits")
+        def background_task():
+            pet.make_pet(prompt)
+            Clock.schedule_once(lambda dt: self.update_pet_image())
+        thread1 = threading.Thread(target=background_task)
+        thread1.start()
+
+    def update_pet_image(self):
+        pet_screen = self.manager.get_screen('petscreen')
+        pet_screen.change_pet_image("PetaByte/petsystem/pet.gif")
 
 
-def get_scaled_keypoints(offset_y=0):
-    return [
-        {
-            "x": kp["x"],
-            "y": kp["y"] + offset_y,
-            "label": kp["label"],
-            "z_index": floor(kp["z_index"]),
-        }
-        for kp in raw_keypoints
-    ]
 
+    def show_popup(self, title, message):
+        popup = Popup(
+            title=title,
+            content=Label(text=message),
+            auto_dismiss=True,
+            size_hint=(None, None),
+            size=(300, 150)
+        )
+        popup.open()
+        self.open_popups.append(popup)
 
-# Step 4: Create breathing/idle animation keyframes
-skeleton_keypoints = [
-    get_scaled_keypoints(0),
-    get_scaled_keypoints(20),
-    get_scaled_keypoints(-20),
-    # get_scaled_keypoints(-2),
-]
-"""
-#run
-newpet = make_pet()
-pet = newpet.gen_baseimg("red dragon with wings")
-print("generating pet image")
-keyposes = newpet.gen_idle_postions([10,30,-30])
-print("generating Idle")
-frames = newpet.Gen_animation(keyposes)
-print("generating animation")
-newpet.save_as_gif("pet.gif")
-print("saved as pet.gif")
+    def show_button_popup(self,msg):
+        button = Button(text=msg)
+        popup = Popup(
+            title="to pet gen",
+            content=button,
+            auto_dismiss=True,
+            size_hint=(None, None),
+            size=(300, 150)
+        )
+        button.bind(on_press=self.go_to_pet)
+        popup.open()
+        self.open_popups.append(popup)
+
+    def dismiss_all_popups(self):
+        for popup in self.open_popups:
+            popup.dismiss()
+        self.open_popups.clear()
+
+    def on_leave(self):
+        self.dismiss_all_popups()
