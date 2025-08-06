@@ -26,7 +26,7 @@ Technologies
 | `unittest`   | Unit testing                   |
 | `Trello`     | Project planning               |
 | `GitHub`     | Source control & collaboration |
-| `Pixelab(Bitforge)`| Pet generation api |
+| `Pixelab(Bitforge)`| Pet generation API |
 ---
 
 **Group Members**:  
