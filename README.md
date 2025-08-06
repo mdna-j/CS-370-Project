@@ -7,7 +7,6 @@ Petabyte is a Tamagotchi-inspired virtual pet desktop application built in Pytho
 Features
 
 - Interactive pet system with hunger, mood, health, and energy tracking
-- Habit tracker to monitor daily actions and login streaks
 - Mood tracker with real-time emotional feedback
 - Idle system that applies penalties for user inactivity
 - Save/load system SQLite
