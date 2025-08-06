@@ -3,15 +3,37 @@ import sqlite3
 from plyer import notification  # For desktop notifications
 
 class Habit_Manager:
-
-    db_path = "PetaByte/database/petabyte.db"
-
-    def __init__(self, user_id, habit_name, last_check_in=None, streak=1, points=0):
+    def __init__(self, user_id, habit_name, last_check_in=None, streak=1, points=0, db_path="PetaByte/database/petabyte.db"):
         self.user_id = user_id
         self.habit_name = habit_name
         self.last_check_in = last_check_in or (date.today() - timedelta(days=1))
         self.streak = streak
         self.points = points
+        self.db_path = db_path
+        self._ensure_tables()
+
+    def _ensure_tables(self):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''CREATE TABLE IF NOT EXISTS Habits (
+            user_id TEXT,
+            habit_name TEXT,
+            last_check_in TEXT,
+            streak INTEGER,
+            points INTEGER,
+            PRIMARY KEY(user_id, habit_name)
+        )''')
+
+        cursor.execute('''CREATE TABLE IF NOT EXISTS Habits_Log (
+            Habit_ID TEXT,
+            habit_name TEXT,
+            timeptr TIMESTAMP,
+            PRIMARY KEY(Habit_ID, habit_name, timeptr)
+        )''')
+
+        conn.commit()
+        conn.close()
 
     def update_streak(self, today=None):
         today = today or date.today()
@@ -44,50 +66,34 @@ class Habit_Manager:
                 f"streak={self.streak}, points={self.points}, last_check_in={self.last_check_in})>")
 
     def save_to_db(self):
-        conn = sqlite3.connect(Habit_Manager.db_path)
-        conn.execute("PRAGMA foreign_keys = ON")
-        with open("petabyte/habit_tracker/Habits.sql", "r") as ACC:
-            conn.executescript(ACC.read())
-        conn.commit()
-        conn.close()
-
-    def update_db(self):
-        conn = sqlite3.connect(Habit_Manager.db_path)
+        conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute('''
             INSERT OR REPLACE INTO Habits 
             (user_id, habit_name, last_check_in, streak, points) VALUES (?, ?, ?, ?, ?)
         ''', (self.user_id, self.habit_name, self.last_check_in.isoformat(), self.streak, self.points))
-
         conn.commit()
         conn.close()
 
     def log_completion_date(self, today=None):
         today = today or date.today()
-        conn = sqlite3.connect(Habit_Manager.db_path)
-        conn.execute("PRAGMA foreign_keys = ON")
+        conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        with open("petabyte/Habit_tracker/Habits_Log.sql", "r") as ACC:
-            conn.executescript(ACC.read())
-
         cursor.execute('''
-            INSERT INTO Habits_Log (Habit_id, habit_name, timeptr)
+            INSERT INTO Habits_Log (Habit_ID, habit_name, timeptr)
             VALUES (?, ?, ?)
         ''', (self.user_id, self.habit_name, today.isoformat()))
-
         conn.commit()
         conn.close()
 
     @classmethod
-    def load_from_db(cls, user_id, habit_name):
-        conn = sqlite3.connect(Habit_Manager.db_path)
+    def load_from_db(cls, user_id, habit_name, db_path="PetaByte/database/petabyte.db"):
+        conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-
         cursor.execute('''
-            SELECT last_check_in, streak, points FROM Habits_Log
-            WHERE Habit_ID = ? AND habit_name = ?
+            SELECT last_check_in, streak, points FROM Habits
+            WHERE user_id = ? AND habit_name = ?
         ''', (user_id, habit_name))
-
         result = cursor.fetchone()
         conn.close()
 
@@ -95,23 +101,24 @@ class Habit_Manager:
             last_check_in = datetime.strptime(result[0], "%Y-%m-%d").date()
             streak = result[1]
             points = result[2]
-            return cls(user_id, habit_name, last_check_in, streak, points)
+            return cls(user_id, habit_name, last_check_in, streak, points, db_path=db_path)
         else:
-            return cls(user_id, habit_name)
+            return cls(user_id, habit_name, db_path=db_path)
 
     @staticmethod
-    def delete_habit(user_id, habit_name):
-        conn = sqlite3.connect(Habit_Manager.db_path)
+    def delete_habit(user_id, habit_name, db_path="PetaByte/database/petabyte.db"):
+        conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        cursor.execute('DELETE FROM Habits_Log WHERE Habits_Log.Habit_ID= ? AND habit_name = ?', (user_id, habit_name))
+        cursor.execute('DELETE FROM Habits WHERE user_id = ? AND habit_name = ?', (user_id, habit_name))
+        cursor.execute('DELETE FROM Habits_Log WHERE Habit_ID = ? AND habit_name = ?', (user_id, habit_name))
         conn.commit()
         conn.close()
 
     def apply_to_pet(self, pet):
         if self.streak >= 5:
-            pet.update_happiness(10)  # define this method in Pet class
+            pet.update_happiness(10)
         elif self.get_missed_days() >= 2:
-            pet.update_happiness(-5)# should be handled by pet system
+            pet.update_happiness(-5)
 
     def notify_user_missed(self, missed_days):
         notification.notify(

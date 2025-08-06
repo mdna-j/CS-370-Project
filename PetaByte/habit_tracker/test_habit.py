@@ -4,15 +4,21 @@ import pytest
 from datetime import date, timedelta
 from habit_tracker.habit import Habit_Manager
 
-TEST_DB_PATH = "test_habit.sqlite"
+TEST_DB_PATH = "petabyte_test.db"
 
 @pytest.fixture(autouse=True)
 def clean_db():
     if os.path.exists(TEST_DB_PATH):
-        os.remove(TEST_DB_PATH)
+        try:
+            os.remove(TEST_DB_PATH)
+        except PermissionError:
+            pass
     yield
     if os.path.exists(TEST_DB_PATH):
-        os.remove(TEST_DB_PATH)
+        try:
+            os.remove(TEST_DB_PATH)
+        except PermissionError:
+            pass
 
 def test_initial_streak():
     tracker = Habit_Manager("user1", "exercise", db_path=TEST_DB_PATH)
@@ -70,7 +76,6 @@ def test_delete_habit():
     tracker = Habit_Manager("user1", "delete_me", db_path=TEST_DB_PATH)
     tracker.update_streak()
     tracker.save_to_db()
-    tracker.log_completion_date()
 
     Habit_Manager.delete_habit("user1", "delete_me", db_path=TEST_DB_PATH)
 

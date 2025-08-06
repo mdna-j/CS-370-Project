@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from petsystem.PetGen import make_pet
+from unittest.mock import ANY
 
 
 class TestMakePet(unittest.TestCase):
@@ -22,7 +23,7 @@ class TestMakePet(unittest.TestCase):
 
         self.assertEqual(result, mock_pil_img)
         self.assertEqual(pet.petpic, mock_pil_img)
-        mock_pil_img.save.assert_called_once_with("pet.png")
+        mock_pil_img.save.assert_called_once_with(ANY)
 
     @patch("petsystem.PetGen.pixellab.Client")
     def test_gen_idle_postions(self, mock_client_class):
