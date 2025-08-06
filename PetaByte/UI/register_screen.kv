@@ -1,7 +1,7 @@
 <RegisterScreen>:
     canvas.before:
         Color:
-            rgba: 0.95, 0.97, 1, 1  # Same light background
+            rgba: 0.94, 0.97, 0.99, 1  # Soft pastel blue background
         Rectangle:
             pos: self.pos
             size: self.size
@@ -14,7 +14,7 @@
         Label:
             text: "Create Your PetaByte Account"
             font_size: 28
-            color: 0.2, 0.2, 0.3, 1  # Same subtle gray text
+            color: 0.2, 0.2, 0.3, 1  # Soft gray text
 
         TextInput:
             id: username
@@ -22,6 +22,8 @@
             font_size: 18
             size_hint_y: None
             height: 50
+            background_color: 1, 1, 1, 1
+            foreground_color: 0.3, 0.3, 0.3, 1
 
         TextInput:
             id: password
@@ -30,6 +32,8 @@
             font_size: 18
             size_hint_y: None
             height: 50
+            background_color: 1, 1, 1, 1
+            foreground_color: 0.3, 0.3, 0.3, 1
 
         BoxLayout:
             spacing: 20
@@ -39,14 +43,14 @@
             Button:
                 text: "Register"
                 on_release: root.do_register(username.text, password.text)
-                background_color: 0.2, 0.8, 0.4, 1  # Green like login screen
+                background_color: 0.60, 0.85, 0.75, 1  # pastel green
 
             Button:
                 text: "Back to Login"
                 on_release: root.go_to_login()
-                background_color: 0.3, 0.6, 0.9, 1  # Blue like login screen
+                background_color: 0.75, 0.85, 1, 1  # pastel blue
 
             Button:
                 text: "Delete Account Info"
                 on_release: root.go_to_login()
-                background_color: 0.3, 0.6, 0.9, 1  # Blue like login screen
+                background_color: 1, 0.75, 0.75, 1  # pastel red

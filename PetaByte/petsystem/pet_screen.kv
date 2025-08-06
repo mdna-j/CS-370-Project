@@ -27,6 +27,13 @@
                     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
 
             Label:
+                text: "Mood: " + root.current_mood
+                font_size: 20
+                color: 0.2, 0.2, 0.3, 1
+                size_hint_y: 0.1
+                pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+
+            Label:
                 text: "Happiness Level"
                 size_hint_y: 0.15
                 color: 0.2, 0.2, 0.3, 1
@@ -69,5 +76,3 @@
                 text: "Pet Pet"
                 on_press: root.pet_pet()
 
-            Button:
-                text: "Delete Account"

@@ -45,9 +45,19 @@
             Button:
                 text: "Login"
                 on_release: root.login()
-                background_color: 0.3, 0.6, 0.9, 1
+                background_color: 0.3, 0.6, 0.9, 1  # Blue
+                color: 1, 1, 1, 1  # White text
+
+            Button:
+                text: "Forgot Password?"
+                size_hint_y: None
+                height: 40
+                on_release: root.forgot_password()
+                background_color: 0.8, 0.2, 0.2, 1
+                color: 1, 1, 1, 1
 
             Button:
                 text: "Go to Register"
                 on_release: root.go_to_register(self)
-                background_color: 0.2, 0.8, 0.4, 1
+                background_color: 0.2, 0.8, 0.4, 1  # Matching RegisterScreen Green
+                color: 1, 1, 1, 1  # White text

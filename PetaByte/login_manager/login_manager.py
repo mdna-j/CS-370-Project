@@ -70,3 +70,17 @@ class LoginManager:
                 return False
         else:
             return False
+
+    @staticmethod
+    def reset_password(username, new_password):
+        hashed = LoginManager.hash_password(new_password)
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT Account_ID FROM Users WHERE username = ?", (username,))
+            user = cursor.fetchone()
+            if user:
+                cursor.execute("UPDATE Passwords SET password_hash = ? WHERE User_ID = ?", (hashed, user[0]))
+                conn.commit()
+                return True
+            else:
+                return False

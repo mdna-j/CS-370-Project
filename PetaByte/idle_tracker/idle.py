@@ -119,7 +119,7 @@ def insert_idle_log(user_id, timestamp, app_name, mood):
     conn.close()
 
 
-def track_user_activity(user_id, duration_sec=60, interval_sec=5):
+def track_user_activity(user_id, duration_sec=120, interval_sec=5):
     print(f"🔍 Tracking user activity for {duration_sec} seconds...\n")
     end_time = time.time() + duration_sec
     mood_log = []

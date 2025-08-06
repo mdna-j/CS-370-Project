@@ -72,6 +72,7 @@ class make_pet:
             direction="south",
             reference_image=self.petpic,
             inpainting_images=[None, None, None],
+
         )
             return self.animatedpet
 

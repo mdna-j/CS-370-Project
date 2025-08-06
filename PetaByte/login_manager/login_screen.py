@@ -1,3 +1,4 @@
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen
 from kivy.properties import ObjectProperty
@@ -7,11 +8,10 @@ from login_manager.login_manager import LoginManager
 import os
 from kivy.lang import Builder
 import threading
-from idle_tracker.idle import track_user_activity  # Make sure this path is correct
+from idle_tracker.idle import track_user_activity
 
 kv_path = os.path.join(os.path.dirname(__file__), "login_screen.kv")
 Builder.load_file(kv_path)
-
 
 class LoginScreen(Screen):
     username_input = ObjectProperty(None)
@@ -29,13 +29,19 @@ class LoginScreen(Screen):
 
         # Authenticate user
         if LoginManager.authenticate_user(username, password):
-            self.go_to_generate()
-            # Start idle tracking in background
             user_id = LoginManager.get_user_id(username)
+
+            # Pass user_id to PetScreen and switch screens
+            pet_screen = self.manager.get_screen("petscreen")
             if user_id is not None:
+                pet_screen.set_user_id(user_id)
+
+                # Start idle tracking in background
                 idle_thread = threading.Thread(target=track_user_activity, args=(user_id,))
                 idle_thread.daemon = True
                 idle_thread.start()
+
+            self.go_to_generate()
         else:
             self.show_popup("Login Failed", "Incorrect username or password.")
 
@@ -76,3 +82,28 @@ class LoginScreen(Screen):
 
     def on_leave(self):
         self.dismiss_all_popups()
+
+    def forgot_password(self):
+        from kivy.uix.textinput import TextInput
+        box = BoxLayout(orientation='vertical', spacing=10, padding=10)
+
+        username_input = TextInput(hint_text="Enter username", multiline=False)
+        new_password_input = TextInput(hint_text="Enter new password", multiline=False, password=True)
+
+        box.add_widget(username_input)
+        box.add_widget(new_password_input)
+
+        def reset(_):
+            username = username_input.text.strip()
+            new_password = new_password_input.text.strip()
+            if username and new_password:
+                success = LoginManager.reset_password(username, new_password)
+                message = "Password reset successful!" if success else "Username not found!"
+                self.show_popup("Reset Status", message)
+                popup.dismiss()
+
+        confirm_btn = Button(text="Reset Password", on_press=reset)
+        box.add_widget(confirm_btn)
+
+        popup = Popup(title="Forgot Password?", content=box, size_hint=(None, None), size=(400, 250))
+        popup.open()
