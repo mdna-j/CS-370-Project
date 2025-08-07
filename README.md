@@ -43,6 +43,42 @@ PetaByte/
 
 ---
 
+How to Clone the Project:  
+Step 1: Install Git  
+Windows:Go to https://git-scm.com/download/win  
+Run the downloaded installer and follow the default setup instructions.  
+
+macOS: Open the Terminal app.  
+Run this command: xcode-select --install  
+
+Follow the prompts to install Git.  
+
+
+Step 2: Open a Terminal or Command Prompt  
+On Windows, press Windows + R, type cmd, and press Enter.  
+
+On macOS, open the Terminal from Applications > Utilities.  
+
+Step 3: Choose a Folder to Clone Into  
+You can use cd to navigate to where you want to clone the project.   
+Example: cd Desktop  
+
+Step 4: Clone the Project from GitHub  
+Use this command:  
+git clone https://github.com/mdna-j/CS-370-Project.git  
+This will create a folder called CS-370-Project in your current directory.   
+
+Step 5: Open the Project  
+Open the cloned folder in your code editor (like PyCharm or VS Code).  
+
+Example in PyCharm:  
+Open PyCharm  
+Click "Open"  
+Navigate to the cloned CS-370-Project folder and select it.  
+
+---
+
+
 **Group Members**:  
 Jose Medina  
 Kevin Mendoza  
