@@ -29,8 +29,8 @@ Technologies
 
 ---
 
-Directory Structure
-PetaByte/
+Directory Structure  
+PetaByte/  
 ├── database/           # SQLite database scripts and schema  
 ├── habit_tracker/      # Habit tracking logic and unit tests   
 ├── idle_tracker/       # Idle activity detection and mood mapping   
