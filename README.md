@@ -61,7 +61,7 @@ On macOS, open the Terminal from Applications > Utilities.
 
 Step 3: Choose a Folder to Clone Into  
 You can use cd to navigate to where you want to clone the project.   
-Example: cd Desktop  
+Example: cd Desktop or cd Documents  
 
 Step 4: Clone the Project from GitHub  
 Use this command:  
