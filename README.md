@@ -45,7 +45,7 @@ PetaByte/
 
 How to Clone the Project:  
 Step 1: Install Git  
-Windows:Go to https://git-scm.com/download/win  
+Windows: Go to https://git-scm.com/download/win  
 Run the downloaded installer and follow the default setup instructions.  
 
 macOS: Open the Terminal app.  
